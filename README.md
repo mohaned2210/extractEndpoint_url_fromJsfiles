@@ -4,6 +4,17 @@
 وتنسيقها بشكل مناسب وجاهز
 
 طريقة التحميل
+
+base tool: 
+```
+cd
+git clone https://github.com/GerbenJavado/LinkFinder.git
+cd LinkFinder
+python setup.py install
+#then
+cd
+go install github.com/0xsha/GoLinkFinder@latest
+```
 ```
 git clone https://github.com/mohaned2210/extractEndpoint_url_fromJsfiles.git
 cd extractEndpoint_url_fromJsfiles/
