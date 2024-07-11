@@ -3,6 +3,13 @@
 
 وتنسيقها بشكل مناسب وجاهز
 
+طريقة التحميل
+```
+git clone https://github.com/mohaned2210/extractEndpoint_url_fromJsfiles.git
+cd extractEndpoint_url_fromJsfiles/
+chmod +x extract_link_fromJs.sh  
+```
+
 usage:
 ```
 ./extract_link_fromJs.sh /path/to/jsUrls.txt
