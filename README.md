@@ -16,6 +16,7 @@ cd
 go install github.com/0xsha/GoLinkFinder@latest
 ```
 ```
+sudo apt-get install parallel
 git clone https://github.com/mohaned2210/extractEndpoint_url_fromJsfiles.git
 cd extractEndpoint_url_fromJsfiles/
 chmod +x extract_link_fromJs.sh  
