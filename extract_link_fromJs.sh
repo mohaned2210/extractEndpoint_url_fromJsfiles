@@ -109,49 +109,51 @@ process_url() {
     echo "" >> "$temp_file"
 }
 
-export -f process_links
-export -f process_url
+# Export functions for use with GNU Parallel
 export -f extract_domain
 export -f is_subdomain
+export -f process_links
+export -f process_url
 
 # Function to process URLs recursively
 process_recursively() {
     local input="$1"
     local depth="$2"
     local current_output="$temp_dir/depth_${depth}.txt"
+    local all_urls="$temp_dir/all_urls.txt"
 
     echo "Processing at depth $depth"
 
     # Use GNU Parallel to process URLs concurrently
-    cat "$input" | parallel -j 20 process_url {} "$temp_dir"
+    parallel -j 20 process_url {} "$temp_dir" :::: "$input"
 
     # Combine all unique temporary files into the current depth output file
-    cat "$temp_dir"/*.tmp | sort -u > "$current_output"
+    find "$temp_dir" -name "*.tmp" -exec cat {} + | sort -u > "$current_output"
 
     # Remove specified file types from the output file
     sed -i '/\.css\|\.svg\|\.woff\|\.woff2\|\.woff3\|\.gif\|\.tiff\|\.ttf\|\/image\/png\|\/text\/css\|\/image\/x-icon/d' "$current_output"
 
-    # Append current depth results to the final output file
-    cat "$current_output" >> "$output_file"
+    # Append current depth results to the all URLs file
+    cat "$current_output" >> "$all_urls"
 
-    # Check if we should continue recursion
-    if [ "$depth" -lt "$max_depth" ]; then
-        # Find new URLs that weren't in the previous depth
-        new_urls="$temp_dir/new_urls_${depth}.txt"
-        if [ "$depth" -eq 1 ]; then
-            cp "$current_output" "$new_urls"
-        else
-            comm -23 <(sort "$current_output") <(sort "$temp_dir/depth_$((depth-1)).txt") > "$new_urls"
-        fi
-
-        # If there are new URLs, continue recursion
-        if [ -s "$new_urls" ]; then
-            process_recursively "$new_urls" $((depth + 1))
-        else
-            echo "No new URLs found. Stopping recursion."
-        fi
+    # Find new URLs that weren't in the previous depths
+    new_urls="$temp_dir/new_urls_${depth}.txt"
+    if [ "$depth" -eq 1 ]; then
+        cp "$current_output" "$new_urls"
     else
-        echo "Reached maximum recursion depth."
+        comm -23 <(sort "$current_output") <(sort "$temp_dir/all_urls_prev.txt") > "$new_urls"
+    fi
+
+    # Update the all URLs file for the next iteration
+    sort -u "$all_urls" -o "$temp_dir/all_urls_prev.txt"
+
+    # If there are new URLs and we haven't reached max depth, continue recursion
+    if [ -s "$new_urls" ] && [ "$depth" -lt "$max_depth" ]; then
+        process_recursively "$new_urls" $((depth + 1))
+    else
+        echo "Recursion complete. Final depth: $depth"
+        # Copy all discovered URLs to the output file
+        sort -u "$all_urls" -o "$output_file"
     fi
 }
 
@@ -160,8 +162,5 @@ process_recursively "$input_file" 1
 
 # Cleanup
 rm -rf "$temp_dir"
-
-# Remove duplicates from the final output file
-sort -u "$output_file" -o "$output_file"
 
 echo "Unique filtered links have been saved to: $output_file"
