@@ -10,7 +10,7 @@ base tool:
 cd
 git clone https://github.com/GerbenJavado/LinkFinder.git
 cd LinkFinder
-python setup.py install
+sudo python3 setup.py install
 #then
 cd
 go install github.com/0xsha/GoLinkFinder@latest
