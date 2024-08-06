@@ -11,6 +11,7 @@ cd
 git clone https://github.com/GerbenJavado/LinkFinder.git
 cd LinkFinder
 sudo python3 setup.py install
+sudo pip3 install -r requirements.txt
 #then
 cd
 go install github.com/0xsha/GoLinkFinder@latest
