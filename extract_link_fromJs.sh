@@ -4,13 +4,14 @@
 max_depth=3
 threads=20
 input_file=""
-
+output_file="./linkfromJSfile.txt"  # Default output file
 # Parse command line arguments
-while getopts "d:t:u:" opt; do
+while getopts "d:t:u:o:" opt; do
   case $opt in
     d) max_depth="$OPTARG" ;;
     t) threads="$OPTARG" ;;
     u) input_file="$OPTARG" ;;
+    o) output_file="$OPTARG" ;;
     \?) echo "Invalid option -$OPTARG" >&2; exit 1 ;;
   esac
 done
@@ -18,7 +19,7 @@ done
 # Check if input file is provided
 if [ -z "$input_file" ]; then
     echo "Error: Input file is required."
-    echo "Usage: ./extract_link.sh -u /path/to/input/file [-d max_recursion_depth] [-t threads]"
+    echo "Usage: ./extract_link.sh -u /path/to/input/file [-d max_recursion_depth] [-t threads] [-o output_file]"
     exit 1
 fi
 
@@ -28,8 +29,8 @@ if [ ! -f "$input_file" ]; then
     exit 1
 fi
 
-# Output file path
-output_file="./linkfromJSfile.txt"
+
+
 
 # Temporary directory for intermediate processing
 temp_dir=$(mktemp -d)
