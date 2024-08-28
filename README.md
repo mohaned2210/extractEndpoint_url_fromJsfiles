@@ -25,6 +25,6 @@ chmod +x extract_link_fromJs.sh
 
 usage:
 ```
-./extract_link_fromJs.sh /path/to/jsUrls.txt
+./extract_link_fromJs.sh -u /path/to/jsUrls.txt
 ```
 ![image](https://github.com/mohaned2210/extractEndpoint_url_fromJsfiles/assets/139042918/d00f9914-ab7e-4133-afd6-c6d9e8878417)
